@@ -50,10 +50,34 @@ curl -N http://localhost:4000/api/events
 
 ## Deployment
 
-- Vercel deploys the React app using `vercel.json`.
-- Render deploys the API, Postgres, and Redis using `render.yaml`.
-- Set `VITE_API_URL` in Vercel to your Render API URL plus `/api`, for example `https://hefai-api.onrender.com/api`.
-- Set `WEB_ORIGIN` in Render to your Vercel frontend URL, for example `https://hefai.vercel.app`.
+### Vercel Frontend
+
+Use either setup:
+
+- Recommended: set Vercel Root Directory to `apps/web`. Build Command: `npm run build`. Output Directory: `dist`.
+- Alternative: keep Vercel Root Directory as repository root. Build Command: `npm --workspace apps/web run build`. Output Directory: `apps/web/dist`.
+
+Set this Vercel environment variable:
+
+- `VITE_API_URL=https://YOUR_RENDER_API_URL/api`
+
+### Render API
+
+Render free deployment should host only the API service from `render.yaml`.
+
+Use external free services for data:
+
+- PostgreSQL: Neon or Supabase. Put the connection string in Render as `DATABASE_URL`.
+- Redis: Upstash Redis or another Redis provider. Put the Redis connection string in Render as `REDIS_URL`.
+
+Set these Render environment variables:
+
+- `DATABASE_URL=postgresql://...`
+- `REDIS_URL=redis://...` or `rediss://...`
+- `WEB_ORIGIN=https://YOUR_VERCEL_FRONTEND_URL`
+- `ALLOW_VERCEL_ORIGINS=true`
+
+After Render deploys, set Vercel `VITE_API_URL` to the Render API URL plus `/api`.
 
 ## Domains Covered
 
