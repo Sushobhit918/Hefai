@@ -3,7 +3,7 @@ services:
     name: hefai-api
     runtime: node
     plan: free
-    buildCommand: npm ci --include=dev && npm run prisma:generate && npm --workspace apps/api run build
+    buildCommand: npm ci --include=dev && DATABASE_URL=postgresql://placeholder:placeholder@localhost:5432/placeholder npm run prisma:generate && npm --workspace apps/api run build
     startCommand: npx prisma migrate deploy --schema apps/api/prisma/schema.prisma && node apps/api/dist/server.js
     healthCheckPath: /api/health
     envVars:
