@@ -1,0 +1,113 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  STAFF
+  CUSTOMER
+}
+
+enum ProductCategory {
+  OFFICE
+  EDUCATIONAL
+  ALMIRAH
+}
+
+enum Material {
+  STEEL
+  WOOD
+  ENGINEERED_WOOD
+  METAL_WOOD
+  LAMINATE
+}
+
+enum OrderStatus {
+  NEW
+  CONFIRMED
+  IN_PROGRESS
+  READY
+  DELIVERED
+  CANCELLED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(CUSTOMER)
+  phone        String?
+  organization String?
+  address      String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  orders       Order[]
+}
+
+model Product {
+  id          String          @id @default(cuid())
+  sku         String          @unique
+  name        String
+  category    ProductCategory
+  material    Material
+  description String
+  price       Int
+  priceRange  String?
+  stock       Int
+  imageUrl    String
+  featured    Boolean         @default(false)
+  active      Boolean         @default(true)
+  dimensions  String
+  useCase     String
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  orderItems  OrderItem[]
+}
+
+model Order {
+  id             String      @id @default(cuid())
+  userId         String?
+  customerName   String
+  email          String
+  phone          String
+  organization   String?
+  address        String
+  projectName    String?
+  segment        String?
+  deliveryTimeline String?
+  budgetRange    String?
+  notes          String?
+  status         OrderStatus @default(NEW)
+  total          Int
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  items          OrderItem[]
+  customer       User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  productId String
+  quantity  Int
+  unitPrice Int
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id])
+}
+
+model Inquiry {
+  id          String   @id @default(cuid())
+  name        String
+  email       String
+  phone       String
+  requirement String
+  segment     String
+  resolved    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}

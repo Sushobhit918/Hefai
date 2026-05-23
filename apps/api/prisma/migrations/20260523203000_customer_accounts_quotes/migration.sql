@@ -1,0 +1,12 @@
+ALTER TABLE "User" ADD COLUMN "phone" TEXT;
+ALTER TABLE "User" ADD COLUMN "organization" TEXT;
+ALTER TABLE "User" ADD COLUMN "address" TEXT;
+
+ALTER TABLE "Order" ADD COLUMN "userId" TEXT;
+ALTER TABLE "Order" ADD COLUMN "projectName" TEXT;
+ALTER TABLE "Order" ADD COLUMN "segment" TEXT;
+ALTER TABLE "Order" ADD COLUMN "deliveryTimeline" TEXT;
+ALTER TABLE "Order" ADD COLUMN "budgetRange" TEXT;
+
+ALTER TABLE "Order" ADD CONSTRAINT "Order_userId_fkey"
+  FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
